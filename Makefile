@@ -6,7 +6,7 @@ PKG_CONFIG?=pkg-config
 BINARY?=main
 
 all: $(BINARY)
-$(BINARY): config.o
+$(BINARY): config.o texture.o
 clean:
 	rm -f *.o $(BINARY)
 gitignore:
