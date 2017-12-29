@@ -28,6 +28,9 @@ Config loadConfig (string filename, bool debug) {
 			} else if (token == "fpscounter") {
 				configFile >> config.fpscounter;
 				if (debug) std::cout << "  fpscounter: " << (config.fpscounter ? "on" : "off") << std::endl;
+			} else if (token == "name") {
+				configFile >> config.name;
+				if (debug) std::cout << "  name: " << config.name << std::endl;
 			}
 		}
 
