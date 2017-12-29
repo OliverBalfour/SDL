@@ -1,6 +1,6 @@
 
 CPPFLAGS=$(shell sdl2-config --cflags)$(EXTRA_CPPFLAGS)
-LDLIBS=$(shell sdl2-config --libs) $(EXTRA_LDLIBS)
+LDLIBS=$(shell sdl2-config --libs) -lSDL2_image -lSDL2_mixer -lSDL2_ttf $(EXTRA_LDLIBS)
 
 PKG_CONFIG?=pkg-config
 BINARY?=main

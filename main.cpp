@@ -1,6 +1,9 @@
 
 #include <iostream>
 #include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include "config.hpp"
 
 using std::string;
@@ -56,7 +59,7 @@ void loop () {
 
 SDL_Surface* loadSurface (string path) {
 	SDL_Surface* osf = NULL; //optimised surface
-	SDL_Surface* sf = SDL_LoadBMP(path.c_str());
+	SDL_Surface* sf = IMG_Load(path.c_str());
 	if (sf == NULL) {
 		std::cerr << "SDL Error: Could not load image '" << path << "': " << SDL_GetError() << "\n";
 		return NULL;
@@ -71,7 +74,7 @@ SDL_Surface* loadSurface (string path) {
 }
 
 void loadResources () {
-	image = loadSurface("blob.bmp");
+	image = loadSurface("blob.png");
 }
 
 void freeResources () {
@@ -108,6 +111,13 @@ bool init () {
 	// Create surface
 	ctx = SDL_GetWindowSurface(window);
 	if (debug) std::cout << "Created SDL surface (context)\n";
+
+	// Init SDL_image
+	int flags = IMG_INIT_PNG | IMG_INIT_JPG;
+	if (!(IMG_Init(flags) & flags)) {
+		std::cerr << "SDL_image error: Could not initialise: " << IMG_GetError() << "\n";
+		return false;
+	}
 
 	return true;
 }
