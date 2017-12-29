@@ -10,11 +10,44 @@ using std::string;
 
 Config config;
 SDL_Window* window = NULL;
+SDL_Renderer* renderer = NULL;
 SDL_Surface* ctx = NULL;
-SDL_Surface* image = NULL;
+SDL_Texture* texture = NULL;
 
 bool debug = true;
 unsigned int timeLast = 0, timeNow = 0;
+
+SDL_Texture* loadTexture (string path) {
+	SDL_Texture* tex = NULL;
+	SDL_Surface* sf = IMG_Load(path.c_str());
+	if (sf == NULL) {
+		std::cerr << "SDL Error: Could not load image '" << path << "': " << IMG_GetError() << "\n";
+		return NULL;
+	}
+	tex = SDL_CreateTextureFromSurface(renderer, sf);
+	if (tex == NULL) {
+		std::cerr << "SDL Error: Could not create texture '" << path << "': " << SDL_GetError() << "\n";
+		return NULL;
+	}
+	SDL_FreeSurface(sf);
+	return tex;
+}
+
+SDL_Surface* loadSurface (string path) {
+	SDL_Surface* osf = NULL; //optimised surface
+	SDL_Surface* sf = IMG_Load(path.c_str());
+	if (sf == NULL) {
+		std::cerr << "SDL Error: Could not load image '" << path << "': " << IMG_GetError() << "\n";
+		return NULL;
+	}
+	osf = SDL_ConvertSurface(sf, ctx->format, 0);
+	if (osf == NULL) {
+		std::cerr << "SDL Error: Could not convert image '" << path << "' from raw: " << SDL_GetError() << "\n";
+		return NULL;
+	}
+	SDL_FreeSurface(sf);
+	return osf;
+}
 
 void drawImage (SDL_Surface* image, unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
 	SDL_Rect rect;
@@ -41,9 +74,12 @@ void render () {
 		std::cout << fps << std::endl;
 	}
 
-	SDL_FillRect(ctx, NULL, SDL_MapRGB(ctx->format, 0xFF, 0xFF, 0xFF));
-	drawImage(image, 10, 20, 80, 100);
-	SDL_UpdateWindowSurface(window);
+	// SDL_FillRect(ctx, NULL, SDL_MapRGB(ctx->format, 0xFF, 0xFF, 0xFF));
+	// drawImage(image, 10, 20, 80, 100);
+	// SDL_UpdateWindowSurface(window);
+	SDL_RenderClear(renderer);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
+	SDL_RenderPresent(renderer);
 }
 
 void loop () {
@@ -57,29 +93,16 @@ void loop () {
 	}
 }
 
-SDL_Surface* loadSurface (string path) {
-	SDL_Surface* osf = NULL; //optimised surface
-	SDL_Surface* sf = IMG_Load(path.c_str());
-	if (sf == NULL) {
-		std::cerr << "SDL Error: Could not load image '" << path << "': " << IMG_GetError() << "\n";
-		return NULL;
-	}
-	osf = SDL_ConvertSurface(sf, ctx->format, 0);
-	if (osf == NULL) {
-		std::cerr << "SDL Error: Could not convert image '" << path << "' from raw: " << SDL_GetError() << "\n";
-		return NULL;
-	}
-	SDL_FreeSurface(sf);
-	return osf;
-}
-
 void loadResources () {
-	image = loadSurface("blob.png");
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	texture = loadTexture("blob.png");
 }
 
 void freeResources () {
-	SDL_FreeSurface(image);
+	SDL_DestroyTexture(texture);
+	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
+	IMG_Quit();
 	SDL_Quit();
 }
 
@@ -103,9 +126,19 @@ bool init () {
 		SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN
 	);
 	if (window == NULL) {
-		std::cerr << "SDL error: Window could not be created: " << SDL_GetError() << std::endl;
+		std::cerr << "SDL error: Window could not be created: " << SDL_GetError() << "\n";
+		return false;
 	} else if (debug) {
 		std::cout << "Created window\n";
+	}
+
+	// Create renderer
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	if (renderer == NULL) {
+		std::cerr << "SDL error: Renderer could not be created: " << SDL_GetError() << "\n";
+		return false;
+	} else if (debug) {
+		std::cout << "Created renderer\n";
 	}
 
 	// Create surface
