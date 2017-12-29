@@ -61,7 +61,7 @@ SDL_Surface* loadSurface (string path) {
 	SDL_Surface* osf = NULL; //optimised surface
 	SDL_Surface* sf = IMG_Load(path.c_str());
 	if (sf == NULL) {
-		std::cerr << "SDL Error: Could not load image '" << path << "': " << SDL_GetError() << "\n";
+		std::cerr << "SDL Error: Could not load image '" << path << "': " << IMG_GetError() << "\n";
 		return NULL;
 	}
 	osf = SDL_ConvertSurface(sf, ctx->format, 0);
