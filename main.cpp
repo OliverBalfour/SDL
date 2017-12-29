@@ -16,25 +16,10 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 Texture bgTexture;
 Texture texture;
+Texture sprite;
 
 bool debug = true;
 unsigned int timeLast = 0, timeNow = 0;
-
-SDL_Texture* loadTexture (string path) {
-	SDL_Texture* tex = NULL;
-	SDL_Surface* sf = IMG_Load(path.c_str());
-	if (sf == NULL) {
-		std::cerr << "SDL Error: Could not load image '" << path << "': " << IMG_GetError() << "\n";
-		return NULL;
-	}
-	tex = SDL_CreateTextureFromSurface(renderer, sf);
-	if (tex == NULL) {
-		std::cerr << "SDL Error: Could not create texture '" << path << "': " << SDL_GetError() << "\n";
-		return NULL;
-	}
-	SDL_FreeSurface(sf);
-	return tex;
-}
 
 void render () {
 	// Clock
@@ -55,6 +40,7 @@ void render () {
 	SDL_RenderClear(renderer);
 	bgTexture.render(0, 0, 400, 400);
 	texture.render(100, 10, 256, 512);
+	
 	SDL_RenderPresent(renderer);
 }
 
@@ -73,6 +59,7 @@ void loadResources () {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	bgTexture.loadFromFile(renderer, "blob.png");
 	texture.loadFromFile(renderer, "bad.png");
+	sprite.loadFromFile(renderer, "sprite.png");
 }
 
 void freeResources () {
