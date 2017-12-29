@@ -3,12 +3,24 @@
 #include <SDL.h>
 #include "config.hpp"
 
+using std::string;
+
 Config config;
 SDL_Window* window = NULL;
 SDL_Surface* ctx = NULL;
+SDL_Surface* image = NULL;
 
 bool debug = true;
 unsigned int timeLast = 0, timeNow = 0;
+
+void drawImage (SDL_Surface* image, unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
+	SDL_Rect rect;
+	rect.x = x;
+	rect.y = y;
+	rect.w = w;
+	rect.h = h;
+	SDL_BlitScaled(image, NULL, ctx, &rect);
+}
 
 void render () {
 	// Clock
@@ -27,8 +39,8 @@ void render () {
 	}
 
 	SDL_FillRect(ctx, NULL, SDL_MapRGB(ctx->format, 0xFF, 0xFF, 0xFF));
+	drawImage(image, 10, 20, 80, 100);
 	SDL_UpdateWindowSurface(window);
-	SDL_Delay(500);
 }
 
 void loop () {
@@ -42,7 +54,28 @@ void loop () {
 	}
 }
 
+SDL_Surface* loadSurface (string path) {
+	SDL_Surface* osf = NULL; //optimised surface
+	SDL_Surface* sf = SDL_LoadBMP(path.c_str());
+	if (sf == NULL) {
+		std::cerr << "SDL Error: Could not load image '" << path << "': " << SDL_GetError() << "\n";
+		return NULL;
+	}
+	osf = SDL_ConvertSurface(sf, ctx->format, 0);
+	if (osf == NULL) {
+		std::cerr << "SDL Error: Could not convert image '" << path << "' from raw: " << SDL_GetError() << "\n";
+		return NULL;
+	}
+	SDL_FreeSurface(sf);
+	return osf;
+}
+
+void loadResources () {
+	image = loadSurface("blob.bmp");
+}
+
 void freeResources () {
+	SDL_FreeSurface(image);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
@@ -86,6 +119,11 @@ int main (int argc, char* argv[]) {
 		std::cerr << "Failed to initialise, crashing\n";
 		return 1;
 	}
+
+	// Load resources
+	if (debug) std::cout << "Loading resources...\n";
+	loadResources();
+	if (debug) std::cout << "Finished loading resources\n\n";
 
 	// Main loop
 	if (debug) std::cout << "Started loop\n";
