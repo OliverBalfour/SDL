@@ -1,4 +1,4 @@
-windowWidth 640
-windowHeight 480
+windowWidth 1350
+windowHeight 750
 fullscreen 0
 fpscounter 0

@@ -8,6 +8,8 @@
 
 #include "config.hpp"
 #include "texture.hpp"
+#include "entity.hpp"
+#include "player-controller.hpp"
 
 using std::string;
 
@@ -15,8 +17,9 @@ Config config;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 Texture bgTexture;
-Texture texture;
-Texture sprite;
+
+PlayerController playerController;
+Entity player(playerController, "sprite.png");
 
 bool debug = true;
 unsigned int timeLast = 0, timeNow = 0;
@@ -38,9 +41,8 @@ void render () {
 	}
 
 	SDL_RenderClear(renderer);
-	bgTexture.render(0, 0, 400, 400);
-	texture.render(100, 10, 256, 512);
-	
+	bgTexture.render(0, 0, 1350, 750);
+	player.render();
 	SDL_RenderPresent(renderer);
 }
 
@@ -58,8 +60,6 @@ void loop () {
 void loadResources () {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	bgTexture.loadFromFile(renderer, "blob.png");
-	texture.loadFromFile(renderer, "bad.png");
-	sprite.loadFromFile(renderer, "sprite.png");
 }
 
 void freeResources () {

@@ -48,5 +48,14 @@ void Texture::render (int x, int y, int w, int h) {
     SDL_RenderCopy(renderer, texture, NULL, &rect);
 }
 
+void Texture::render (SDL_Rect clip, int x, int y) {
+    SDL_Rect rect = {x, y, clip.w, clip.h};
+    SDL_RenderCopy(renderer, texture, &clip, &rect);
+}
+void Texture::render (SDL_Rect clip, int x, int y, float scale) {
+    SDL_Rect rect = {x, y, clip.w * scale, clip.h * scale};
+    SDL_RenderCopy(renderer, texture, &clip, &rect);
+}
+
 int Texture::getWidth () { return width; }
 int Texture::getHeight () { return height; }
