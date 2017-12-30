@@ -8,9 +8,6 @@
 // all it is responsible for doing is changing state
 // example action source: keyboard/mouse, AI code, or TCP socket connection
 
-// forward declaration
-class Entity;
-
 enum EntityState {
     ENTITY_IDLE, // Standing still. To running, flying, unconscious, dead
     ENTITY_JUMPING, // Preparing for a jump. To flying, idle, running, unconscious, dead
@@ -22,15 +19,13 @@ enum EntityState {
     ENTITY_CLIMBING_JUMPING, // Preparing to jump off a wall. To flying, climbing_idle, climbing, flying_unconscious
     ENTITY_UNCONSCIOUS, // Knocked out. To dead
     ENTITY_DEAD // Dead. To nothing
-}
+};
 
 class EntityController {
     public:
-        EntityController ();
-        void bindEntity (Entity* ent);
-        virtual void update ();
+        virtual EntityState update (EntityState state) = 0;
     protected:
-        Entity* entity;
+        EntityState state;
 };
 
 #endif

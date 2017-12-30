@@ -19,7 +19,7 @@ SDL_Renderer* renderer = NULL;
 Texture bgTexture;
 
 PlayerController playerController;
-Entity player(playerController, "sprite.png");
+Entity player(&playerController, renderer, "sprite.png");
 
 bool debug = true;
 unsigned int timeLast = 0, timeNow = 0;

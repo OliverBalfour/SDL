@@ -1,6 +1,20 @@
 
-void PlayerController::update () {
-    switch (entity->state) {
+#include "player-controller.hpp"
+
+void PlayerController::stateIdle () {}
+void PlayerController::stateJumping () {}
+void PlayerController::stateRunning () {}
+void PlayerController::stateFlying () {}
+void PlayerController::stateFlyingUnconscious () {}
+void PlayerController::stateClimbing () {}
+void PlayerController::stateClimbingIdle () {}
+void PlayerController::stateClimbingJumping () {}
+void PlayerController::stateUnconscious () {}
+void PlayerController::stateDead () {}
+
+EntityState PlayerController::update (EntityState st) {
+    state = st;
+    switch (state) {
         case ENTITY_IDLE:
             stateIdle(); break;
         case ENTITY_JUMPING:
@@ -22,8 +36,5 @@ void PlayerController::update () {
         case ENTITY_DEAD:
             stateDead(); break;
     }
-}
-
-void stateIdle () {
-    ;
+    return state;
 }

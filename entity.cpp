@@ -1,12 +1,14 @@
 
-Entity::Entity (EntityController* ctrl, std::string spritePath) {
+#include "entity.hpp"
+
+Entity::Entity (EntityController* ctrl, SDL_Renderer* renderer, std::string spritePath) {
     state = ENTITY_IDLE;
     x = 0;
     y = 0;
     direction = true;
-    sprite.loadFromFile(spritePath);
+    if (!sprite.loadFromFile(renderer, spritePath))
+        std::cerr << "Entity error: Could not load sprite: " << spritePath << "\n";
     control = ctrl;
-    control->bindEntity(this);
 }
 
 void Entity::render () {
@@ -21,5 +23,5 @@ void Entity::render () {
 }
 
 void Entity::update () {
-    control->update();
+    state = control->update(state);
 }

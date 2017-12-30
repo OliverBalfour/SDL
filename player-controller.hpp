@@ -5,6 +5,8 @@
 #include "entity-controller.hpp"
 
 class PlayerController : public EntityController {
+    public:
+        EntityState update (EntityState);
     private:
         void stateIdle ();
         void stateJumping ();

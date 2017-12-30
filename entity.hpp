@@ -2,12 +2,14 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include <SDL.h>
+
 #include "texture.hpp"
 #include "entity-controller.hpp"
 
 class Entity {
     public:
-        Entity (EntityController* ctrl, std::string spritePath);
+        Entity (EntityController* ctrl, SDL_Renderer* renderer, std::string spritePath);
         void render ();
         void update ();
     private:
@@ -15,7 +17,6 @@ class Entity {
         unsigned short int y;
         bool direction; // true is right (or down, when climbing)
         Texture sprite;
-        friend class EntityController;
         EntityController* control;
         EntityState state;
 };
