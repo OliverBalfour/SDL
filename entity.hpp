@@ -13,12 +13,8 @@ class Entity {
         void render ();
         void update ();
     private:
-        unsigned short int x;
-        unsigned short int y;
-        bool direction; // true is right (or down, when climbing)
         Texture sprite;
         EntityController* control;
-        EntityState state;
 };
 
 #endif

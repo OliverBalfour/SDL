@@ -1,9 +1,33 @@
 
 #include "player-controller.hpp"
 
-void PlayerController::stateIdle () {}
+PlayerController::PlayerController (std::vector<bool>* kys, Mouse* ms) {
+    keys = kys;
+    mouse = ms;
+}
+
+void PlayerController::stateIdle () {
+    // if (keys[SDLK_d]) {
+    //     direction = 1;
+    //     state = ENTITY_RUNNING;
+    // } else if (keys[SDLK_a]) {
+    //     direction = 0;
+    //     state = ENTITY_RUNNING;
+    // }
+}
 void PlayerController::stateJumping () {}
-void PlayerController::stateRunning () {}
+void PlayerController::stateRunning () {
+    // if (direction) x += 5;
+    // else x -= 5;
+    //
+    // if (keys[SDLK_d]) {
+    //     direction = 1;
+    // } else if (keys[SDLK_a]) {
+    //     direction = 0;
+    // } else {
+    //     state = ENTITY_IDLE;
+    // }
+}
 void PlayerController::stateFlying () {}
 void PlayerController::stateFlyingUnconscious () {}
 void PlayerController::stateClimbing () {}
@@ -12,8 +36,7 @@ void PlayerController::stateClimbingJumping () {}
 void PlayerController::stateUnconscious () {}
 void PlayerController::stateDead () {}
 
-EntityState PlayerController::update (EntityState st) {
-    state = st;
+void PlayerController::update () {
     switch (state) {
         case ENTITY_IDLE:
             stateIdle(); break;
@@ -36,5 +59,4 @@ EntityState PlayerController::update (EntityState st) {
         case ENTITY_DEAD:
             stateDead(); break;
     }
-    return state;
 }

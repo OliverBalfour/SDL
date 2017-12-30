@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <vector>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -18,8 +19,11 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 Texture bgTexture;
 
-PlayerController playerController;
-Entity player(&playerController, renderer, "sprite.png");
+std::vector<bool> keys(256);
+Mouse mouse = {0, 0, false, false, false};
+
+PlayerController playerController(&keys, &mouse);
+Entity* player;
 
 bool debug = true;
 unsigned int timeLast = 0, timeNow = 0;
@@ -42,17 +46,34 @@ void render () {
 
 	SDL_RenderClear(renderer);
 	bgTexture.render(0, 0, 1350, 750);
-	player.render();
+	player->render();
 	SDL_RenderPresent(renderer);
 }
 
 void loop () {
 	while (true) {
 		SDL_Event ev;
-		while (SDL_PollEvent(&ev))
+		while (SDL_PollEvent(&ev)) {
 			if (ev.type == SDL_QUIT || ev.type == SDL_KEYUP && ev.key.keysym.sym == SDLK_ESCAPE)
 				return;
 
+			if (ev.type == SDL_MOUSEBUTTONDOWN || ev.type == SDL_MOUSEBUTTONUP) {
+				switch (ev.button.button) {
+					case SDL_BUTTON_LEFT:
+						mouse.leftButton = ev.button.state == SDL_PRESSED; break;
+					case SDL_BUTTON_RIGHT:
+						mouse.rightButton = ev.button.state == SDL_PRESSED; break;
+					case SDL_BUTTON_MIDDLE:
+						mouse.middleButton = ev.button.state == SDL_PRESSED; break;
+				}
+			} else if (ev.type == SDL_MOUSEMOTION) {
+				mouse.x = ev.motion.x;
+				mouse.y = ev.motion.y;
+			} else if (ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP) {
+				keys[ev.key.keysym.sym] = ev.key.state == SDL_PRESSED;
+			}
+		}
+		player->update();
 		render();
 	}
 }
@@ -104,12 +125,18 @@ bool init () {
 		std::cout << "Created renderer\n";
 	}
 
+	// Create player, now that there is a renderer
+	player = new Entity(&playerController, renderer, "sprite.png");
+
 	// Init SDL_image
 	int flags = IMG_INIT_PNG | IMG_INIT_JPG;
 	if (!(IMG_Init(flags) & flags)) {
 		std::cerr << "SDL_image error: Could not initialise: " << IMG_GetError() << "\n";
 		return false;
 	}
+
+	for (int i = 0; i < keys.capacity(); i++)
+		keys[i] = false;
 
 	return true;
 }

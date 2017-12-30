@@ -21,11 +21,18 @@ enum EntityState {
     ENTITY_DEAD // Dead. To nothing
 };
 
+class Entity;
+
 class EntityController {
     public:
-        virtual EntityState update (EntityState state) = 0;
+        EntityController ();
+        virtual void update () = 0;
     protected:
+        friend class Entity;
         EntityState state;
+        unsigned short int x;
+        unsigned short int y;
+        bool direction; // true is right (or down, when climbing)
 };
 
 #endif
