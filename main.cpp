@@ -45,7 +45,7 @@ void render () {
 	}
 
 	SDL_RenderClear(renderer);
-	bgTexture.render(0, 0, 1350, 750);
+	bgTexture.render(0, 0, config.windowWidth, config.windowHeight);
 	player->render();
 	SDL_RenderPresent(renderer);
 }
@@ -117,7 +117,8 @@ bool init () {
 	}
 
 	// Create renderer
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	int rendererFlags = config.vsync ? SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC : SDL_RENDERER_ACCELERATED;
+	renderer = SDL_CreateRenderer(window, -1, rendererFlags);
 	if (renderer == NULL) {
 		std::cerr << "SDL error: Renderer could not be created: " << SDL_GetError() << "\n";
 		return false;

@@ -9,6 +9,7 @@ struct Config {
 	int windowHeight =	600;
 	bool fullscreen =	false;
 	bool fpscounter =	false;
+	bool vsync =		true;
 	string name =		"SDL Game";
 };
 

@@ -7,26 +7,26 @@ PlayerController::PlayerController (std::vector<bool>* kys, Mouse* ms) {
 }
 
 void PlayerController::stateIdle () {
-    // if (keys[SDLK_d]) {
-    //     direction = 1;
-    //     state = ENTITY_RUNNING;
-    // } else if (keys[SDLK_a]) {
-    //     direction = 0;
-    //     state = ENTITY_RUNNING;
-    // }
+    if (keys->at(SDLK_d)) {
+        direction = 1;
+        state = ENTITY_RUNNING;
+    } else if (keys->at(SDLK_a)) {
+        direction = 0;
+        state = ENTITY_RUNNING;
+    }
 }
 void PlayerController::stateJumping () {}
 void PlayerController::stateRunning () {
-    // if (direction) x += 5;
-    // else x -= 5;
-    //
-    // if (keys[SDLK_d]) {
-    //     direction = 1;
-    // } else if (keys[SDLK_a]) {
-    //     direction = 0;
-    // } else {
-    //     state = ENTITY_IDLE;
-    // }
+    if (direction) x += 2;
+    else x -= 2;
+
+    if (keys->at(SDLK_d)) {
+        direction = 1;
+	} else if (keys->at(SDLK_a)) {
+        direction = 0;
+    } else {
+        state = ENTITY_IDLE;
+    }
 }
 void PlayerController::stateFlying () {}
 void PlayerController::stateFlyingUnconscious () {}
