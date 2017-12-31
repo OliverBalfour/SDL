@@ -4,20 +4,23 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 
 #include <SDL.h>
 
 #include "entity-controller.hpp"
+#include "observer.hpp"
 
 struct Mouse {
 	unsigned short int x, y;
 	bool leftButton, rightButton, middleButton;
 };
 
-class PlayerController : public EntityController {
+class PlayerController : public EntityController, public Observer {
     public:
         PlayerController (std::vector<bool>* kys, Mouse* ms);
         void update ();
+		void onNotify (unsigned short int event);
     private:
         std::vector<bool>* keys;
         Mouse* mouse;

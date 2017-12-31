@@ -6,7 +6,7 @@ PKG_CONFIG?=pkg-config
 BINARY?=main
 
 all: $(BINARY)
-$(BINARY): config.o texture.o entity.o entity-controller.o player-controller.o
+$(BINARY): config.o texture.o entity.o entity-controller.o player-controller.o observer.o
 clean:
 	rm -f *.o $(BINARY)
 gitignore:

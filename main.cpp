@@ -13,6 +13,7 @@
 #include "texture.hpp"
 #include "entity.hpp"
 #include "player-controller.hpp"
+#include "observer.hpp"
 
 using std::string;
 
@@ -29,6 +30,7 @@ Mouse mouse = {0, 0, false, false, false};
 
 PlayerController playerController(&keys, &mouse);
 Entity* player;
+Subject MouseKbdEvent;
 
 bool debug = true;
 // For FPS averaged over 10 frames
@@ -80,11 +82,14 @@ void loop () {
 					case SDL_BUTTON_MIDDLE:
 						mouse.middleButton = ev.button.state == SDL_PRESSED; break;
 				}
+				MouseKbdEvent.notify(0);
 			} else if (ev.type == SDL_MOUSEMOTION) {
 				mouse.x = ev.motion.x;
 				mouse.y = ev.motion.y;
+				MouseKbdEvent.notify(1);
 			} else if (ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP) {
 				keys[ev.key.keysym.sym] = ev.key.state == SDL_PRESSED;
+				MouseKbdEvent.notify(2);
 			}
 		}
 		player->update();
@@ -166,6 +171,7 @@ bool init () {
 		keys[i] = false;
 	for (int i = 0; i < frameTimesSize; i++)
 		frameTimes.push(0);
+	MouseKbdEvent.addObserver(&playerController);
 
 	return true;
 }

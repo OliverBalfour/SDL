@@ -30,8 +30,8 @@ class EntityController {
     protected:
         friend class Entity;
         EntityState state;
-        unsigned short int x;
-        unsigned short int y;
+        unsigned short int x, y;
+        short int vx, vy;
         bool direction; // true is right (or down, when climbing)
 };
 

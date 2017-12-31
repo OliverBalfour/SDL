@@ -60,3 +60,7 @@ void PlayerController::update () {
             stateDead(); break;
     }
 }
+
+void PlayerController::onNotify (unsigned short int event) {
+    std::cout << event << '\n';
+}
