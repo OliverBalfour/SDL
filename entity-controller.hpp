@@ -9,7 +9,7 @@
 // example action source: keyboard/mouse, AI code, or TCP socket connection
 
 enum EntityState {
-    ENTITY_IDLE, // Standing still. To running, flying, unconscious, dead
+    ENTITY_IDLE, // Standing still. To running, jumping, unconscious, dead
     ENTITY_JUMPING, // Preparing for a jump. To flying, idle, running, unconscious, dead
     ENTITY_RUNNING, // Running. To idle, flying, jumping, climbing, unconscious, dead
     ENTITY_FLYING, // Falling/jumping through open air. To climbing, idle, running, flying_unconscious
@@ -33,6 +33,7 @@ class EntityController {
         unsigned short int x, y;
         short int vx, vy;
         bool direction; // true is right (or down, when climbing)
+        unsigned int startTicks; // SDL_GetTicks() at the start of a sprite animation after a state change
 };
 
 #endif

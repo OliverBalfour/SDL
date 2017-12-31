@@ -6,27 +6,13 @@ PlayerController::PlayerController (std::vector<bool>* kys, Mouse* ms) {
     mouse = ms;
 }
 
-void PlayerController::stateIdle () {
-    if (keys->at(SDLK_d)) {
-        direction = 1;
-        state = ENTITY_RUNNING;
-    } else if (keys->at(SDLK_a)) {
-        direction = 0;
-        state = ENTITY_RUNNING;
-    }
-}
+void PlayerController::stateIdle () {}
 void PlayerController::stateJumping () {}
 void PlayerController::stateRunning () {
-    if (direction) x += 2;
-    else x -= 2;
-
-    if (keys->at(SDLK_d)) {
-        direction = 1;
-	} else if (keys->at(SDLK_a)) {
-        direction = 0;
-    } else {
-        state = ENTITY_IDLE;
-    }
+    if (direction)
+        x += 2;
+    else
+        x -= 2;
 }
 void PlayerController::stateFlying () {}
 void PlayerController::stateFlyingUnconscious () {}
@@ -61,6 +47,40 @@ void PlayerController::update () {
     }
 }
 
-void PlayerController::onNotify (unsigned short int event) {
-    std::cout << event << '\n';
+void PlayerController::onNotify (unsigned int event, unsigned int data) {
+    // press key to change direction
+    if (event == SDL_KEYDOWN && data == SDLK_a)
+        direction = 0;
+    else if (event == SDL_KEYDOWN && data == SDLK_d)
+        direction = 1;
+    // release key to revert direction
+    else if (event == SDL_KEYUP && data == SDLK_a && keys->at(SDLK_d))
+        direction = 1;
+    else if (event == SDL_KEYUP && data == SDLK_d && keys->at(SDLK_a))
+        direction = 0;
+
+    // press A/D to start running
+    if (event == SDL_KEYDOWN && (data == SDLK_a || data == SDLK_d) && state == ENTITY_IDLE)
+        { state = ENTITY_RUNNING; direction = data == SDLK_d; startTicks = SDL_GetTicks(); }
+    // press A/D to start climbing (as opposed to climbing_idle)
+    else if (event == SDL_KEYDOWN && (data == SDLK_a || data == SDLK_d) && state == ENTITY_CLIMBING_IDLE)
+        { state = ENTITY_CLIMBING; direction = data == SDLK_d; startTicks = SDL_GetTicks(); }
+    // press A/D to start running
+    else if (event == SDL_KEYUP && (data == SDLK_a || data == SDLK_d) && !keys->at(SDLK_a) && !keys->at(SDLK_d) && state == ENTITY_RUNNING)
+        state = ENTITY_IDLE;
+    // press A/D to start climbing (as opposed to climbing_idle)
+    else if (event == SDL_KEYUP && (data == SDLK_a || data == SDLK_d) && !keys->at(SDLK_a) && !keys->at(SDLK_d) && state == ENTITY_CLIMBING)
+        state = ENTITY_CLIMBING_IDLE;
+    // left click to start jumping
+    else if (event == SDL_MOUSEBUTTONDOWN && data == SDL_BUTTON_LEFT && (state == ENTITY_IDLE || state == ENTITY_RUNNING))
+        state = ENTITY_JUMPING;
+    // left click to start climbing_jumping
+    else if (event == SDL_MOUSEBUTTONDOWN && data == SDL_BUTTON_LEFT && (state == ENTITY_CLIMBING_IDLE || state == ENTITY_CLIMBING))
+        state = ENTITY_CLIMBING_JUMPING;
+    // release left click to stop jumping and idle
+    else if (event == SDL_MOUSEBUTTONUP && data == SDL_BUTTON_LEFT && state == ENTITY_JUMPING)
+        state = ENTITY_IDLE;
+    // release left click to stop climbing_jumping and idle
+    else if (event == SDL_MOUSEBUTTONUP && data == SDL_BUTTON_LEFT && state == ENTITY_CLIMBING_JUMPING)
+        state = ENTITY_CLIMBING_IDLE;
 }

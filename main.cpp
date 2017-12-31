@@ -30,7 +30,7 @@ Mouse mouse = {0, 0, false, false, false};
 
 PlayerController playerController(&keys, &mouse);
 Entity* player;
-Subject MouseKbdEvent;
+Subject InputEventSubject;
 
 bool debug = true;
 // For FPS averaged over 10 frames
@@ -76,20 +76,19 @@ void loop () {
 			if (ev.type == SDL_MOUSEBUTTONDOWN || ev.type == SDL_MOUSEBUTTONUP) {
 				switch (ev.button.button) {
 					case SDL_BUTTON_LEFT:
-						mouse.leftButton = ev.button.state == SDL_PRESSED; break;
+						mouse.leftButton = ev.button.state == SDL_PRESSED; InputEventSubject.notify(ev.type, SDL_BUTTON_LEFT); break;
 					case SDL_BUTTON_RIGHT:
-						mouse.rightButton = ev.button.state == SDL_PRESSED; break;
+						mouse.rightButton = ev.button.state == SDL_PRESSED; InputEventSubject.notify(ev.type, SDL_BUTTON_RIGHT); break;
 					case SDL_BUTTON_MIDDLE:
-						mouse.middleButton = ev.button.state == SDL_PRESSED; break;
+						mouse.middleButton = ev.button.state == SDL_PRESSED; InputEventSubject.notify(ev.type, SDL_BUTTON_MIDDLE); break;
 				}
-				MouseKbdEvent.notify(0);
 			} else if (ev.type == SDL_MOUSEMOTION) {
 				mouse.x = ev.motion.x;
 				mouse.y = ev.motion.y;
-				MouseKbdEvent.notify(1);
+				InputEventSubject.notify(SDL_MOUSEMOTION, 0);
 			} else if (ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP) {
 				keys[ev.key.keysym.sym] = ev.key.state == SDL_PRESSED;
-				MouseKbdEvent.notify(2);
+				InputEventSubject.notify(ev.type, ev.key.keysym.sym);
 			}
 		}
 		player->update();
@@ -171,7 +170,7 @@ bool init () {
 		keys[i] = false;
 	for (int i = 0; i < frameTimesSize; i++)
 		frameTimes.push(0);
-	MouseKbdEvent.addObserver(&playerController);
+	InputEventSubject.addObserver(&playerController);
 
 	return true;
 }

@@ -13,7 +13,7 @@ void Entity::render () {
     if (control->state == ENTITY_IDLE)
         frameIndex = 0;
     else if (control->state == ENTITY_RUNNING) {
-        unsigned int ticks = SDL_GetTicks();
+        unsigned int ticks = SDL_GetTicks() - control->startTicks;
         if ((ticks - ticks % 500) % 1000 == 0)
             frameIndex = 1;
         else frameIndex = 2;

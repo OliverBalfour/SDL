@@ -11,8 +11,8 @@ void Subject::removeObserver (Observer* obs) {
         observers.erase(it);
 }
 
-void Subject::notify (unsigned short int event) {
+void Subject::notify (unsigned int event, unsigned int data) {
     for (int i = 0; i < observers.size(); i++) {
-        observers[i]->onNotify(event);
+        observers[i]->onNotify(event, data);
     }
 }

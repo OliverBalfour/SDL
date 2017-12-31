@@ -20,7 +20,7 @@ class PlayerController : public EntityController, public Observer {
     public:
         PlayerController (std::vector<bool>* kys, Mouse* ms);
         void update ();
-		void onNotify (unsigned short int event);
+		void onNotify (unsigned int event, unsigned int data);
     private:
         std::vector<bool>* keys;
         Mouse* mouse;
