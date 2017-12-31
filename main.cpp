@@ -1,6 +1,8 @@
 
 #include <iostream>
 #include <vector>
+#include <sstream>
+#include <queue>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -20,6 +22,7 @@ SDL_Renderer* renderer = NULL;
 TTF_Font* font = NULL;
 Texture bgTexture;
 Texture testText;
+Texture fpsText;
 
 std::vector<bool> keys(256);
 Mouse mouse = {0, 0, false, false, false};
@@ -28,28 +31,36 @@ PlayerController playerController(&keys, &mouse);
 Entity* player;
 
 bool debug = true;
-unsigned int timeLast = 0, timeNow = 0;
+// For FPS averaged over 10 frames
+const int frameTimesSize = 10;
+std::queue<unsigned int> frameTimes;
 
 void render () {
 	// Clock
-	timeLast = timeNow;
-	timeNow = SDL_GetTicks();
-
-	// FPS measurement
-	if (config.fpscounter) {
-		unsigned int fps;
-		// avoid division by zero
-		if (timeNow - timeLast <= 1)
-		fps = 999;
-		else
-		fps = 1000 / (timeNow - timeLast);
-		std::cout << fps << std::endl;
-	}
+	frameTimes.pop();
+	frameTimes.push(SDL_GetTicks());
 
 	SDL_RenderClear(renderer);
 	bgTexture.render(0, 0, config.windowWidth, config.windowHeight);
 	testText.render(100, 100);
 	player->render();
+
+	// FPS measurement
+	if (config.fpscounter) {
+		unsigned int fps;
+		// avoid division by zero
+		if ((frameTimes.back() - frameTimes.front()) / frameTimesSize <= 1)
+			fps = 999;
+		else
+			fps = 1000 / ((frameTimes.back() - frameTimes.front()) / frameTimesSize);
+
+		SDL_Color color = {0, 0, 0};
+		std::stringstream fpsString;
+		fpsString << "fps " << fps;
+		fpsText.loadFromText(renderer, font, &color, fpsString.str().c_str());
+		fpsText.render(10, 10);
+	}
+
 	SDL_RenderPresent(renderer);
 }
 
@@ -148,11 +159,13 @@ bool init () {
 	}
 
 	// Load font
-	font = TTF_OpenFont("DejaVuSans.ttf", 28);
+	font = TTF_OpenFont("DejaVuSans-Bold.ttf", 16);
 
-	// Populate keys array
+	// Populate  arrays
 	for (int i = 0; i < keys.capacity(); i++)
 		keys[i] = false;
+	for (int i = 0; i < frameTimesSize; i++)
+		frameTimes.push(0);
 
 	return true;
 }

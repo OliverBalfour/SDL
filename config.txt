@@ -1,5 +1,5 @@
 windowWidth 640
 windowHeight 480
 fullscreen 0
-fpscounter 0
+fpscounter 1
 vsync 1
