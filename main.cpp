@@ -17,7 +17,9 @@ using std::string;
 Config config;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
+TTF_Font* font = NULL;
 Texture bgTexture;
+Texture testText;
 
 std::vector<bool> keys(256);
 Mouse mouse = {0, 0, false, false, false};
@@ -46,6 +48,7 @@ void render () {
 
 	SDL_RenderClear(renderer);
 	bgTexture.render(0, 0, config.windowWidth, config.windowHeight);
+	testText.render(100, 100);
 	player->render();
 	SDL_RenderPresent(renderer);
 }
@@ -81,6 +84,8 @@ void loop () {
 void loadResources () {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	bgTexture.loadFromFile(renderer, "blob.png");
+	SDL_Color color = {0, 0, 0};
+	testText.loadFromText(renderer, font, &color, "Hello World! I'm a 1337 TrueType font!");
 }
 
 void freeResources () {
@@ -136,6 +141,16 @@ bool init () {
 		return false;
 	}
 
+	// Init SDL_ttf
+	if (TTF_Init() == -1) {
+		std::cerr << "SDL_ttf error: Could not initialise: " << TTF_GetError() << "\n";
+		return false;
+	}
+
+	// Load font
+	font = TTF_OpenFont("DejaVuSans.ttf", 28);
+
+	// Populate keys array
 	for (int i = 0; i < keys.capacity(); i++)
 		keys[i] = false;
 

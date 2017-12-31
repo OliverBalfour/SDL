@@ -7,6 +7,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 
 using std::string;
 
@@ -15,6 +16,7 @@ class Texture {
         Texture ();
         ~Texture();
         bool loadFromFile (SDL_Renderer* rnd, string path);
+		bool loadFromText (SDL_Renderer* rnd, TTF_Font* fnt, SDL_Color* cl, string txt);
         void unload();
         void render (int x, int y);
         void render (int x, int y, int w, int h);
@@ -25,6 +27,9 @@ class Texture {
 
     private:
         SDL_Renderer* renderer;
+		TTF_Font* font;
+		SDL_Color* color;
+		string text;
         SDL_Texture* texture;
         int width;
         int height;
