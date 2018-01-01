@@ -90,6 +90,10 @@ void loop () {
 				input.motion = {MOUSEMOTION_INPUT, ev.motion.x, ev.motion.y, ev.motion.xrel, ev.motion.yrel};
 				InputEventSubject.notify(input);
 			} else if (ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP) {
+				// modifier keys have massive values, presumably buffer underflowed negatives (shift's keycode is 1073742049)
+				// so we ignore them to avoid a segfault
+				if (ev.key.keysym.sym >= 256)
+					continue;
 				keys[ev.key.keysym.sym] = ev.key.state == SDL_PRESSED;
 				Input input;
 				input.key = {(ev.key.state == SDL_PRESSED) ? KEYDOWN_INPUT : KEYUP_INPUT, ev.key.keysym.sym};
