@@ -8,7 +8,9 @@ BINARY?=main
 all: $(BINARY)
 $(BINARY): config.o texture.o entity.o entity-controller.o player-controller.o observer.o
 clean:
-	rm -f *.o $(BINARY)
+	rm -f *.o *.map $(BINARY)
 gitignore:
 	echo "**/*.o\n$(BINARY)" > .gitignore
-.PHONY: all clean gitignore
+levels:
+	echo not finished yet
+.PHONY: all clean gitignore levels

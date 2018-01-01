@@ -114,9 +114,10 @@ void loop () {
 
 void loadResources () {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-	bgTexture.loadFromFile(renderer, "blob.png");
+	bgTexture.loadFromFile(renderer, "assets/blob.png");
 	SDL_Color color = {0, 0, 0};
 	testText.loadFromText(renderer, font, &color, "Hello World! I'm a 1337 TrueType font!");
+	player = new Entity(&playerController, renderer, "assets/sprite.png");
 }
 
 void freeResources () {
@@ -162,9 +163,6 @@ bool init () {
 		std::cout << "Created renderer\n";
 	}
 
-	// Create player, now that there is a renderer
-	player = new Entity(&playerController, renderer, "sprite.png");
-
 	// Init SDL_image
 	int flags = IMG_INIT_PNG | IMG_INIT_JPG;
 	if (!(IMG_Init(flags) & flags)) {
@@ -179,7 +177,7 @@ bool init () {
 	}
 
 	// Load font
-	font = TTF_OpenFont("DejaVuSans-Bold.ttf", 16);
+	font = TTF_OpenFont("assets/DejaVuSans-Bold.ttf", 16);
 
 	// Populate  arrays
 	for (int i = 0; i < keys.capacity(); i++)
