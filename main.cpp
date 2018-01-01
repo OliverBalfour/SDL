@@ -14,13 +14,14 @@
 #include "entity.hpp"
 #include "player-controller.hpp"
 #include "observer.hpp"
+#include "input.hpp"
 
 using std::string;
 
 Config config;
-SDL_Window* window = NULL;
-SDL_Renderer* renderer = NULL;
-TTF_Font* font = NULL;
+SDL_Window* window = nullptr;
+SDL_Renderer* renderer = nullptr;
+TTF_Font* font = nullptr;
 Texture bgTexture;
 Texture testText;
 Texture fpsText;
@@ -74,21 +75,29 @@ void loop () {
 				return;
 
 			if (ev.type == SDL_MOUSEBUTTONDOWN || ev.type == SDL_MOUSEBUTTONUP) {
+				unsigned short button;
 				switch (ev.button.button) {
 					case SDL_BUTTON_LEFT:
-						mouse.leftButton = ev.button.state == SDL_PRESSED; InputEventSubject.notify(ev.type, SDL_BUTTON_LEFT); break;
+						mouse.leftButton = ev.button.state == SDL_PRESSED; button = SDL_BUTTON_LEFT; break;
 					case SDL_BUTTON_RIGHT:
-						mouse.rightButton = ev.button.state == SDL_PRESSED; InputEventSubject.notify(ev.type, SDL_BUTTON_RIGHT); break;
+						mouse.rightButton = ev.button.state == SDL_PRESSED; button = SDL_BUTTON_RIGHT; break;
 					case SDL_BUTTON_MIDDLE:
-						mouse.middleButton = ev.button.state == SDL_PRESSED; InputEventSubject.notify(ev.type, SDL_BUTTON_MIDDLE); break;
+						mouse.middleButton = ev.button.state == SDL_PRESSED; button = SDL_BUTTON_MIDDLE; break;
 				}
+				Input input;
+				input.button = {(ev.button.state == SDL_PRESSED) ? MOUSEBUTTONDOWN_INPUT : MOUSEBUTTONUP_INPUT, button};
+				InputEventSubject.notify(input);
 			} else if (ev.type == SDL_MOUSEMOTION) {
 				mouse.x = ev.motion.x;
 				mouse.y = ev.motion.y;
-				InputEventSubject.notify(SDL_MOUSEMOTION, 0);
+				Input input;
+				input.motion = {MOUSEMOTION_INPUT, ev.motion.x, ev.motion.y, ev.motion.xrel, ev.motion.yrel};
+				InputEventSubject.notify(input);
 			} else if (ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP) {
 				keys[ev.key.keysym.sym] = ev.key.state == SDL_PRESSED;
-				InputEventSubject.notify(ev.type, ev.key.keysym.sym);
+				Input input;
+				input.key = {(ev.key.state == SDL_PRESSED) ? KEYDOWN_INPUT : KEYUP_INPUT, ev.key.keysym.sym};
+				InputEventSubject.notify(input);
 			}
 		}
 		player->update();
@@ -129,7 +138,7 @@ bool init () {
 		config.windowWidth, config.windowHeight,
 		SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN
 	);
-	if (window == NULL) {
+	if (window == nullptr) {
 		std::cerr << "SDL error: Window could not be created: " << SDL_GetError() << "\n";
 		return false;
 	} else if (debug) {
@@ -139,7 +148,7 @@ bool init () {
 	// Create renderer
 	int rendererFlags = config.vsync ? SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC : SDL_RENDERER_ACCELERATED;
 	renderer = SDL_CreateRenderer(window, -1, rendererFlags);
-	if (renderer == NULL) {
+	if (renderer == nullptr) {
 		std::cerr << "SDL error: Renderer could not be created: " << SDL_GetError() << "\n";
 		return false;
 	} else if (debug) {

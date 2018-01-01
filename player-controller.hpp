@@ -10,6 +10,7 @@
 
 #include "entity-controller.hpp"
 #include "observer.hpp"
+#include "input.hpp"
 
 struct Mouse {
 	unsigned short int x, y;
@@ -20,7 +21,7 @@ class PlayerController : public EntityController, public Observer {
     public:
         PlayerController (std::vector<bool>* kys, Mouse* ms);
         void update ();
-		void onNotify (unsigned int event, unsigned int data);
+		void onNotify (const Input& input);
     private:
         std::vector<bool>* keys;
         Mouse* mouse;

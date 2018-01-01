@@ -5,16 +5,18 @@
 #include <vector>
 #include <algorithm>
 
+#include "input.hpp"
+
 class Observer {
     public:
-        virtual void onNotify (unsigned int event, unsigned int data) = 0;
+        virtual void onNotify (const Input& input) = 0;
 };
 
 class Subject {
     public:
         void addObserver (Observer* obs);
         void removeObserver (Observer* obs);
-        void notify (unsigned int event, unsigned int data);
+        void notify (const Input& input);
     protected:
         std::vector<Observer*> observers;
 };
