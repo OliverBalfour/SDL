@@ -18,9 +18,9 @@ void Entity::render () {
             frameIndex = 1;
         else frameIndex = 2;
     }
-    sprite.render({16 * frameIndex, 0, 16, 32}, control->x, control->y, 2.0f, flip);
+    sprite.render({16 * frameIndex, 0, 16, 32}, (int)round(control->x), (int)round(control->y), 2.0f, flip);
 }
 
-void Entity::update () {
-    control->update();
+void Entity::update (float delta) {
+    control->update(delta);
 }

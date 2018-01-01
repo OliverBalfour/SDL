@@ -26,12 +26,12 @@ class Entity;
 class EntityController {
     public:
         EntityController ();
-        virtual void update () = 0;
+        virtual void update (float delta) = 0;
     protected:
         friend class Entity;
         EntityState state;
-        unsigned short int x, y;
-        short int vx, vy;
+        double x, y;
+        float vx, vy;
         bool direction; // true is right (or down, when climbing)
         unsigned int startTicks; // SDL_GetTicks() at the start of a sprite animation after a state change
 };

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
-#include <queue>
+#include <deque>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -36,13 +36,9 @@ Subject InputEventSubject;
 bool debug = true;
 // For FPS averaged over 10 frames
 const int frameTimesSize = 10;
-std::queue<unsigned int> frameTimes;
+std::deque<unsigned int> frameTimes;
 
 void render () {
-	// Clock
-	frameTimes.pop();
-	frameTimes.push(SDL_GetTicks());
-
 	SDL_RenderClear(renderer);
 	bgTexture.render(0, 0, config.windowWidth, config.windowHeight);
 	testText.render(100, 100);
@@ -100,7 +96,14 @@ void loop () {
 				InputEventSubject.notify(input);
 			}
 		}
-		player->update();
+
+		// Clock
+		frameTimes.pop_front();
+		frameTimes.push_back(SDL_GetTicks());
+		// Difference in time between this and last frame, for time based physics
+		float delta = (frameTimes[frameTimesSize - 1] - frameTimes[frameTimesSize - 2]) / 1000.0f;
+
+		player->update(delta);
 		render();
 	}
 }
@@ -178,7 +181,7 @@ bool init () {
 	for (int i = 0; i < keys.capacity(); i++)
 		keys[i] = false;
 	for (int i = 0; i < frameTimesSize; i++)
-		frameTimes.push(0);
+		frameTimes.push_back(0);
 	InputEventSubject.addObserver(&playerController);
 
 	return true;

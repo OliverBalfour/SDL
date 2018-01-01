@@ -6,44 +6,44 @@ PlayerController::PlayerController (std::vector<bool>* kys, Mouse* ms) {
     mouse = ms;
 }
 
-void PlayerController::stateIdle () {}
-void PlayerController::stateJumping () {}
-void PlayerController::stateRunning () {
+void PlayerController::stateIdle (float delta) {}
+void PlayerController::stateJumping (float delta) {}
+void PlayerController::stateRunning (float delta) {
     if (direction)
-        x += 2;
+        x += delta * 120;
     else
-        x -= 2;
+        x -= delta * 120;
 }
-void PlayerController::stateFlying () {}
-void PlayerController::stateFlyingUnconscious () {}
-void PlayerController::stateClimbing () {}
-void PlayerController::stateClimbingIdle () {}
-void PlayerController::stateClimbingJumping () {}
-void PlayerController::stateUnconscious () {}
-void PlayerController::stateDead () {}
+void PlayerController::stateFlying (float delta) {}
+void PlayerController::stateFlyingUnconscious (float delta) {}
+void PlayerController::stateClimbing (float delta) {}
+void PlayerController::stateClimbingIdle (float delta) {}
+void PlayerController::stateClimbingJumping (float delta) {}
+void PlayerController::stateUnconscious (float delta) {}
+void PlayerController::stateDead (float delta) {}
 
-void PlayerController::update () {
+void PlayerController::update (float delta) {
     switch (state) {
         case ENTITY_IDLE:
-            stateIdle(); break;
+            stateIdle(delta); break;
         case ENTITY_JUMPING:
-            stateJumping(); break;
+            stateJumping(delta); break;
         case ENTITY_RUNNING:
-            stateRunning(); break;
+            stateRunning(delta); break;
         case ENTITY_FLYING:
-            stateFlying(); break;
+            stateFlying(delta); break;
         case ENTITY_FLYING_UNCONSCIOUS:
-            stateFlyingUnconscious(); break;
+            stateFlyingUnconscious(delta); break;
         case ENTITY_CLIMBING:
-            stateClimbing(); break;
+            stateClimbing(delta); break;
         case ENTITY_CLIMBING_IDLE:
-            stateClimbingIdle(); break;
+            stateClimbingIdle(delta); break;
         case ENTITY_CLIMBING_JUMPING:
-            stateClimbingJumping(); break;
+            stateClimbingJumping(delta); break;
         case ENTITY_UNCONSCIOUS:
-            stateUnconscious(); break;
+            stateUnconscious(delta); break;
         case ENTITY_DEAD:
-            stateDead(); break;
+            stateDead(delta); break;
     }
 }
 
