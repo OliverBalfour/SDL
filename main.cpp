@@ -15,6 +15,7 @@
 #include "player-controller.hpp"
 #include "observer.hpp"
 #include "input.hpp"
+#include "map.hpp"
 
 using std::string;
 
@@ -23,8 +24,8 @@ SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 TTF_Font* font = nullptr;
 Texture bgTexture;
-Texture testText;
 Texture fpsText;
+Map* map;
 
 std::vector<bool> keys(256);
 Mouse mouse = {0, 0, false, false, false};
@@ -41,8 +42,7 @@ std::deque<unsigned int> frameTimes;
 void render () {
 	SDL_RenderClear(renderer);
 	bgTexture.render(0, 0, config.windowWidth, config.windowHeight);
-	testText.render(100, 100);
-	player->render();
+	map->render();
 
 	// FPS measurement
 	if (config.fpscounter) {
@@ -116,8 +116,10 @@ void loadResources () {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	bgTexture.loadFromFile(renderer, "assets/blob.png");
 	SDL_Color color = {0, 0, 0};
-	testText.loadFromText(renderer, font, &color, "Hello World! I'm a 1337 TrueType font!");
 	player = new Entity(&playerController, renderer, "assets/sprite.png");
+	map = new Map(renderer);
+	map->loadFromFile("levels/test.map");
+	map->setPlayer(player);
 }
 
 void freeResources () {

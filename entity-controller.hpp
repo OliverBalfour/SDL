@@ -22,6 +22,7 @@ enum EntityState {
 };
 
 class Entity;
+class Map;
 
 class EntityController {
     public:
@@ -29,6 +30,7 @@ class EntityController {
         virtual void update (float delta) = 0;
     protected:
         friend class Entity;
+        friend class Map;
         EntityState state;
         double x, y;
         float vx, vy;

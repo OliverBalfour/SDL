@@ -7,9 +7,10 @@ Entity::Entity (EntityController* ctrl, SDL_Renderer* renderer, std::string spri
     control = ctrl;
 }
 
-void Entity::render () {
+void Entity::render (int ox, int oy) {
     unsigned short int frameIndex;
     SDL_RendererFlip flip = control->direction ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+
     if (control->state == ENTITY_IDLE)
         frameIndex = 0;
     else if (control->state == ENTITY_RUNNING) {
@@ -18,7 +19,10 @@ void Entity::render () {
             frameIndex = 1;
         else frameIndex = 2;
     }
-    sprite.render({16 * frameIndex, 0, 16, 32}, (int)round(control->x), (int)round(control->y), 2.0f, flip);
+
+    int rx = (int)round(control->x) + ox,
+        ry = (int)round(control->y) + oy;
+    sprite.render({16 * frameIndex, 0, 16, 32}, rx, ry, 2.0f, flip);
 }
 
 void Entity::update (float delta) {
