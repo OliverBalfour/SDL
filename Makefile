@@ -12,5 +12,5 @@ clean:
 gitignore:
 	echo "**/*.o\n$(BINARY)" > .gitignore
 levels:
-	echo not finished yet
+	sh levels/level-parser.sh
 .PHONY: all clean gitignore levels
