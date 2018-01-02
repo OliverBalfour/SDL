@@ -71,10 +71,14 @@ void Map::setPlayer (Entity* pl) {
     entities.push_back(pl);
 }
 
-void Map::render () {
+void Map::render (SDL_Window* window) {
+    int wwidth, wheight;
+    SDL_GetWindowSize(window, &wwidth, &wheight);
+    int wplayer, hplayer;
+    player->getSize(&wplayer, &hplayer);
     int ox, oy; // offset x and y, to make the camera follow the player
-    ox = -( (int)round(player->control->x) );
-    oy = -( (int)round(player->control->y) );
+    ox = -( (int)round(player->control->x) ) + (wwidth  - wplayer) / 2;
+    oy = -( (int)round(player->control->y) ) + (wheight - hplayer) / 2;
 
     // render tiles
     unsigned int index, tx, ty;
@@ -86,10 +90,10 @@ void Map::render () {
                 continue;
             index--;
 
-            tx = index;// % tilesetColumns;
-            ty = 0;//index / tilesetColumns; // int division
+            tx = index % tilesetColumns;
+            ty = index / tilesetColumns; // int division
 
-            tileset.render({ (int)(tx * tileSize), 0, tileSize, tileSize }, x * tileSize + ox, y * tileSize + oy);
+            tileset.render({ (int)(tx * tileSize), (int)(ty * tileSize), tileSize, tileSize }, x * tileSize + ox, y * tileSize + oy);
 
         }
     }

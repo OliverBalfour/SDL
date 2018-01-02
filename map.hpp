@@ -23,7 +23,7 @@ class Map {
         Map (SDL_Renderer* rnd);
         bool loadFromFile (string name);
         void setPlayer(Entity* pl);
-        void render();
+        void render(SDL_Window* window);
     private:
         SDL_Renderer* renderer;
         Entity* player; // pointer to player, also in 'entities'

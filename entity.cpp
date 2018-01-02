@@ -22,7 +22,12 @@ void Entity::render (int ox, int oy) {
 
     int rx = (int)round(control->x) + ox,
         ry = (int)round(control->y) + oy;
-    sprite.render({16 * frameIndex, 0, 16, 32}, rx, ry, 2.0f, flip);
+    sprite.render({16 * frameIndex, 0, 16, 32}, rx, ry, flip);
+}
+
+void Entity::getSize (int* w, int* h) {
+    *w = 16;
+    *h = 32;
 }
 
 void Entity::update (float delta) {
