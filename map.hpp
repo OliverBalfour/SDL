@@ -15,6 +15,7 @@
 #include "entity.hpp"
 #include "entity-controller.hpp"
 #include "texture.hpp"
+#include "box.hpp"
 
 using std::string;
 
@@ -22,8 +23,10 @@ class Map {
     public:
         Map (SDL_Renderer* rnd);
         bool loadFromFile (string name);
-        void setPlayer(Entity* pl);
-        void render(SDL_Window* window);
+        void setPlayer (Entity* pl);
+		bool moveEntity (Entity* ent, double x, double y); // tries to move an entity, handling collisions
+		void update (float delta);
+        void render (SDL_Window* window);
     private:
         SDL_Renderer* renderer;
         Entity* player; // pointer to player, also in 'entities'

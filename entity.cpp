@@ -22,12 +22,11 @@ void Entity::render (int ox, int oy) {
 
     int rx = (int)round(control->x) + ox,
         ry = (int)round(control->y) + oy;
-    sprite.render({16 * frameIndex, 0, 16, 32}, rx, ry, flip);
+    sprite.render({16 * frameIndex, 0, control->w, control->h}, rx, ry, flip);
 }
 
-void Entity::getSize (int* w, int* h) {
-    *w = 16;
-    *h = 32;
+Box Entity::getBoundingBox () {
+    return {(int)control->x, (int)control->y, control->w, control->h};
 }
 
 void Entity::update (float delta) {

@@ -8,6 +8,7 @@
 
 #include "texture.hpp"
 #include "entity-controller.hpp"
+#include "box.hpp"
 
 class Map;
 
@@ -16,7 +17,7 @@ class Entity {
         Entity (EntityController* ctrl, SDL_Renderer* renderer, std::string spritePath);
         void render (int ox, int oy); //offset x and y
         void update (float delta);
-        void getSize (int* w, int* h);
+        Box getBoundingBox ();
     private:
         friend class Map;
         Texture sprite;

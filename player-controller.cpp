@@ -10,9 +10,9 @@ void PlayerController::stateIdle (float delta) {}
 void PlayerController::stateJumping (float delta) {}
 void PlayerController::stateRunning (float delta) {
     if (direction)
-        x += delta * 120;
+        dx = delta * 120;
     else
-        x -= delta * 120;
+        dx = delta * -120;
 }
 void PlayerController::stateFlying (float delta) {}
 void PlayerController::stateFlyingUnconscious (float delta) {}

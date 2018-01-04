@@ -71,14 +71,47 @@ void Map::setPlayer (Entity* pl) {
     entities.push_back(pl);
 }
 
+bool Map::moveEntity (Entity* ent, double x, double y) {
+	EntityController* ctrl = ent->control;
+
+	int nx = (int)(x + ctrl->x),
+		ny = (int)(y + ctrl->y);
+
+	// check for collisions
+
+	// coordinates of the tile the entity is on
+	// TODO: only check for collisions within a certain radius of each entity
+	int ptx = (ctrl->x + ctrl->w / 2) / tileSize, // x, y pos of the tile the entity is located on
+		pty = (ctrl->y + ctrl->h / 2) / tileSize; // for optimised collision detection
+
+	Box entbox = {nx, ny, ctrl->w, ctrl->h};
+	for (int y = 0; y < mapHeight; y++)
+		for (int x = 0; x < mapWidth; x++)
+			if (mapData[y * mapWidth + x] != 0 && boundingBoxCollision(entbox, {x * tileSize, y * tileSize, tileSize, tileSize}))
+				return false;
+
+	// if execution gets to here, there is no collision
+	ctrl->x += x;
+	ctrl->y += y;
+	return true;
+}
+
+void Map::update (float delta) {
+	for (int i = 0; i < entities.size(); i++) {
+        entities[i]->update(delta);
+		moveEntity(entities[i], entities[i]->control->dx, entities[i]->control->dy);
+		entities[i]->control->dx = 0;
+		entities[i]->control->dy = 0;
+    }
+}
+
 void Map::render (SDL_Window* window) {
     int wwidth, wheight;
     SDL_GetWindowSize(window, &wwidth, &wheight);
-    int wplayer, hplayer;
-    player->getSize(&wplayer, &hplayer);
+	Box box = player->getBoundingBox();
     int ox, oy; // offset x and y, to make the camera follow the player
-    ox = -( (int)round(player->control->x) ) + (wwidth  - wplayer) / 2;
-    oy = -( (int)round(player->control->y) ) + (wheight - hplayer) / 2;
+    ox = -( (int)round(player->control->x) ) + (wwidth  - box.w) / 2;
+    oy = -( (int)round(player->control->y) ) + (wheight - box.h) / 2;
 
     // render tiles
     unsigned int index, tx, ty;
@@ -89,11 +122,11 @@ void Map::render (SDL_Window* window) {
             if (index == 0)
                 continue;
             index--;
-
             tx = index % tilesetColumns;
             ty = index / tilesetColumns; // int division
 
             tileset.render({ (int)(tx * tileSize), (int)(ty * tileSize), tileSize, tileSize }, x * tileSize + ox, y * tileSize + oy);
+
 
         }
     }

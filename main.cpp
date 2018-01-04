@@ -107,7 +107,7 @@ void loop () {
 		// Difference in time between this and last frame, for time based physics
 		float delta = (frameTimes[frameTimesSize - 1] - frameTimes[frameTimesSize - 2]) / 1000.0f;
 
-		player->update(delta);
+		map->update(delta);
 		render();
 	}
 }
