@@ -6,8 +6,11 @@ Basic 'game' using C++ and SDL, with SDL's hardware accelerated 2D drawing API u
 ## Install/build
 
 `git clone [url] game`
+
 `cd game`
+
 `make`
+
 `./main` to run
 
 Or to rebuild binary/levels/gitignore

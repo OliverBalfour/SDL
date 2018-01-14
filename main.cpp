@@ -19,12 +19,15 @@
 
 using std::string;
 
+bool playing = false;
+
 Config config;
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 TTF_Font* font = nullptr;
 Texture bgTexture;
 Texture fpsText;
+Texture startText;
 Map* map;
 
 std::vector<bool> keys(256);
@@ -60,6 +63,9 @@ void render () {
 		fpsText.render(10, 10);
 	}
 
+	if (!playing)
+		startText.render(config.windowWidth / 2, config.windowHeight / 2);
+
 	SDL_RenderPresent(renderer);
 }
 
@@ -70,34 +76,43 @@ void loop () {
 			if (ev.type == SDL_QUIT || ev.type == SDL_KEYUP && ev.key.keysym.sym == SDLK_ESCAPE)
 				return;
 
-			if (ev.type == SDL_MOUSEBUTTONDOWN || ev.type == SDL_MOUSEBUTTONUP) {
-				unsigned short button;
-				switch (ev.button.button) {
-					case SDL_BUTTON_LEFT:
+			if (!playing) {
+
+				if (ev.type == SDL_KEYUP && ev.key.keysym.sym == SDLK_SPACE)
+					playing = true;
+
+			} else {
+
+				if (ev.type == SDL_MOUSEBUTTONDOWN || ev.type == SDL_MOUSEBUTTONUP) {
+					unsigned short button;
+					switch (ev.button.button) {
+						case SDL_BUTTON_LEFT:
 						mouse.leftButton = ev.button.state == SDL_PRESSED; button = SDL_BUTTON_LEFT; break;
-					case SDL_BUTTON_RIGHT:
+						case SDL_BUTTON_RIGHT:
 						mouse.rightButton = ev.button.state == SDL_PRESSED; button = SDL_BUTTON_RIGHT; break;
-					case SDL_BUTTON_MIDDLE:
+						case SDL_BUTTON_MIDDLE:
 						mouse.middleButton = ev.button.state == SDL_PRESSED; button = SDL_BUTTON_MIDDLE; break;
-				}
-				Input input;
-				input.button = {(ev.button.state == SDL_PRESSED) ? MOUSEBUTTONDOWN_INPUT : MOUSEBUTTONUP_INPUT, button};
-				InputEventSubject.notify(input);
-			} else if (ev.type == SDL_MOUSEMOTION) {
-				mouse.x = ev.motion.x;
-				mouse.y = ev.motion.y;
-				Input input;
-				input.motion = {MOUSEMOTION_INPUT, ev.motion.x, ev.motion.y, ev.motion.xrel, ev.motion.yrel};
-				InputEventSubject.notify(input);
-			} else if (ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP) {
-				// modifier keys have massive values, presumably buffer underflowed negatives (shift's keycode is 1073742049)
-				// so we ignore them to avoid a segfault
-				if (ev.key.keysym.sym >= 256)
+					}
+					Input input;
+					input.button = {(ev.button.state == SDL_PRESSED) ? MOUSEBUTTONDOWN_INPUT : MOUSEBUTTONUP_INPUT, button};
+					InputEventSubject.notify(input);
+				} else if (ev.type == SDL_MOUSEMOTION) {
+					mouse.x = ev.motion.x;
+					mouse.y = ev.motion.y;
+					Input input;
+					input.motion = {MOUSEMOTION_INPUT, ev.motion.x, ev.motion.y, ev.motion.xrel, ev.motion.yrel};
+					InputEventSubject.notify(input);
+				} else if (ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP) {
+					// modifier keys have massive values, presumably buffer underflowed negatives (shift's keycode is 1073742049)
+					// so we ignore them to avoid a segfault
+					if (ev.key.keysym.sym >= 256)
 					continue;
-				keys[ev.key.keysym.sym] = ev.key.state == SDL_PRESSED;
-				Input input;
-				input.key = {(ev.key.state == SDL_PRESSED) ? KEYDOWN_INPUT : KEYUP_INPUT, ev.key.keysym.sym};
-				InputEventSubject.notify(input);
+					keys[ev.key.keysym.sym] = ev.key.state == SDL_PRESSED;
+					Input input;
+					input.key = {(ev.key.state == SDL_PRESSED) ? KEYDOWN_INPUT : KEYUP_INPUT, ev.key.keysym.sym};
+					InputEventSubject.notify(input);
+				}
+
 			}
 		}
 
@@ -107,7 +122,8 @@ void loop () {
 		// Difference in time between this and last frame, for time based physics
 		float delta = (frameTimes[frameTimesSize - 1] - frameTimes[frameTimesSize - 2]) / 1000.0f;
 
-		map->update(delta);
+		if (playing)
+			map->update(delta);
 		render();
 	}
 }
@@ -116,6 +132,7 @@ void loadResources () {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	bgTexture.loadFromFile(renderer, "assets/background.png");
 	SDL_Color color = {0, 0, 0};
+	startText.loadFromText(renderer, font, &color, "Press Space to start");
 	player = new Entity(&playerController, renderer, "assets/sprite.png");
 	map = new Map(renderer);
 	map->loadFromFile("levels/test.map");

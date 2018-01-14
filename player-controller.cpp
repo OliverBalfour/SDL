@@ -7,7 +7,10 @@ PlayerController::PlayerController (std::vector<bool>* kys, Mouse* ms) {
 }
 
 void PlayerController::stateIdle (float delta) {}
-void PlayerController::stateJumping (float delta) {}
+void PlayerController::stateJumping (float delta) {
+    dx = delta * vx;
+    dy = delta * vy;
+}
 void PlayerController::stateRunning (float delta) {
     if (direction)
         dx = delta * 120;

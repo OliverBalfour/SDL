@@ -82,11 +82,12 @@ bool Map::moveEntity (Entity* ent, double x, double y) {
 	// coordinates of the tile the entity is on
 	// TODO: only check for collisions within a certain radius of each entity
 	int ptx = (ctrl->x + ctrl->w / 2) / tileSize, // x, y pos of the tile the entity is located on
-		pty = (ctrl->y + ctrl->h / 2) / tileSize; // for optimised collision detection
+		pty = (ctrl->y + ctrl->h / 2) / tileSize, // for optimised collision detection
+        psmax = (ctrl->w > ctrl->h ? ctrl->w : ctrl->h) / tileSize;// greater dimension (width/height) in tiles for optimised collision detection
 
 	Box entbox = {nx, ny, ctrl->w, ctrl->h};
-	for (int y = 0; y < mapHeight; y++)
-		for (int x = 0; x < mapWidth; x++)
+	for (int y = pty - psmax; y < pty + psmax; y++)
+		for (int x = ptx - psmax; x < ptx + psmax; x++)
 			if (mapData[y * mapWidth + x] != 0 && boundingBoxCollision(entbox, {x * tileSize, y * tileSize, tileSize, tileSize}))
 				return false;
 
