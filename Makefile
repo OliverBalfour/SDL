@@ -7,12 +7,12 @@ BINARY?=main
 
 .PHONY: all clean gitignore levels
 
-all: $(BINARY)
+all: $(BINARY) levels
 $(BINARY): config.o texture.o entity.o entity-controller.o player-controller.o observer.o map.o box.o lib/base64.o
 
 clean:
-	rm -f *.o *.map $(BINARY)
+	rm -f *.o levels/*.map $(BINARY)
 gitignore:
-	echo "**/*.o\n$(BINARY)" > .gitignore
+	echo "# do not edit, look in Makefile\n**/*.o\n$(BINARY)" > .gitignore
 levels:
 	sh levels/level-parser.sh
