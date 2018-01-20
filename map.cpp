@@ -63,24 +63,30 @@ bool Map::loadFromFile (string name) {
         return false;
     }
 
+    // loop through entities and set their gravity
+    for (int i = 0; i < entities.size(); i++) {
+        std::cout << "hi";
+        entities[i]->control->setGravity(5.0 * tileSize);
+    }
+
     return true;
 }
 
 void Map::setPlayer (Entity* pl) {
     player = pl;
     entities.push_back(pl);
+    pl->control->setGravity(5.0 * tileSize);
 }
 
 bool Map::moveEntity (Entity* ent, double x, double y) {
 	EntityController* ctrl = ent->control;
 
-	int nx = (int)(x + ctrl->x),
-		ny = (int)(y + ctrl->y);
+	int nx = (int)round(x + ctrl->x),
+		ny = (int)round(y + ctrl->y);
 
 	// check for collisions
 
 	// coordinates of the tile the entity is on
-	// TODO: only check for collisions within a certain radius of each entity
 	int ptx = (ctrl->x + ctrl->w / 2) / tileSize, // x, y pos of the tile the entity is located on
 		pty = (ctrl->y + ctrl->h / 2) / tileSize, // for optimised collision detection
         psmax = (ctrl->w > ctrl->h ? ctrl->w : ctrl->h) / tileSize;// greater dimension (width/height) in tiles for optimised collision detection
@@ -94,7 +100,33 @@ bool Map::moveEntity (Entity* ent, double x, double y) {
 	// if execution gets to here, there is no collision
 	ctrl->x += x;
 	ctrl->y += y;
+
+    if (ctrl->state != ENTITY_FLYING && ctrl->state != ENTITY_FLYING_UNCONSCIOUS)
+        checkEntityForFall(ent);
+
 	return true;
+}
+
+void Map::checkEntityForFall (Entity* ent) {
+    EntityController* ctrl = ent->control;
+    int ptx = (ctrl->x + ctrl->w / 2) / tileSize, // x, y pos of the middle/lower tile the entity is located on
+        pty = (ctrl->y + ctrl->h / 2) / tileSize;
+    bool falling = true;
+    // loop through three closest tiles beneath player
+    for (int i = ptx - 1; i < ptx + 2; i++) {
+        if (
+            mapData[(pty + 1) * mapWidth + i] != 0 &&
+            ctrl->x < (i + 1) * tileSize &&
+            ctrl->x + tileSize > i * tileSize
+        ) {
+            falling = false;
+            break;
+        }
+    }
+    if (falling) {
+        ctrl->vy = 0;
+        ctrl->state = ENTITY_FLYING;
+    }
 }
 
 void Map::update (float delta) {

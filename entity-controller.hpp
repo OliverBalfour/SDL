@@ -3,6 +3,7 @@
 #define ENTITY_CONTROLLER_H
 
 #include <string>
+#include <iostream>
 
 // method of controlling an entity - can be a player, AI, or even networked player
 // all it is responsible for doing is changing state
@@ -28,6 +29,7 @@ class EntityController {
     public:
         EntityController ();
         virtual void update (float delta) = 0;
+        void setGravity (float gravity);
     protected:
         friend class Entity;
         friend class Map;
@@ -36,6 +38,7 @@ class EntityController {
 		double dx, dy; // change in x, y requested at the end of a movement
 		unsigned short w, h;
         float vx, vy;
+        float gravity; // acceleration on the y axis
         bool direction; // true is right (or down, when climbing)
         unsigned int startTicks; // SDL_GetTicks() at the start of a sprite animation after a state change
 };

@@ -7,17 +7,18 @@ PlayerController::PlayerController (std::vector<bool>* kys, Mouse* ms) {
 }
 
 void PlayerController::stateIdle (float delta) {}
-void PlayerController::stateJumping (float delta) {
-    dx = delta * vx;
-    dy = delta * vy;
-}
+void PlayerController::stateJumping (float delta) {}
 void PlayerController::stateRunning (float delta) {
     if (direction)
         dx = delta * 120;
     else
         dx = delta * -120;
 }
-void PlayerController::stateFlying (float delta) {}
+void PlayerController::stateFlying (float delta) {
+    vy += gravity * delta;
+    dx = delta * vx;
+    dy = delta * vy;
+}
 void PlayerController::stateFlyingUnconscious (float delta) {}
 void PlayerController::stateClimbing (float delta) {}
 void PlayerController::stateClimbingIdle (float delta) {}
@@ -26,6 +27,12 @@ void PlayerController::stateUnconscious (float delta) {}
 void PlayerController::stateDead (float delta) {}
 
 void PlayerController::update (float delta) {
+    const char* EntityStateStrings[] = {
+        "ENTITY_IDLE", "ENTITY_JUMPING", "ENTITY_RUNNING", "ENTITY_FLYING",
+        "ENTITY_FLYING_UNCONSCIOUS", "ENTITY_CLIMBING", "ENTITY_CLIMBING_IDLE",
+        "ENTITY_CLIMBING_JUMPING", "ENTITY_UNCONSCIOUS", "ENTITY_DEAD"
+    };
+    std::cout << EntityStateStrings[state] << ' ' << vy << '\n';
     switch (state) {
         case ENTITY_IDLE:
             stateIdle(delta); break;
