@@ -38,6 +38,7 @@ class EntityController {
 		double dx, dy; // change in x, y requested at the end of a movement
 		unsigned short w, h;
         float vx, vy;
+		int runningSpeed;
         float gravity; // acceleration on the y axis
         bool direction; // true is right (or down, when climbing)
         unsigned int startTicks; // SDL_GetTicks() at the start of a sprite animation after a state change

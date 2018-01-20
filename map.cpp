@@ -92,10 +92,17 @@ bool Map::moveEntity (Entity* ent, double x, double y) {
         psmax = (ctrl->w > ctrl->h ? ctrl->w : ctrl->h) / tileSize;// greater dimension (width/height) in tiles for optimised collision detection
 
 	Box entbox = {nx, ny, ctrl->w, ctrl->h};
-	for (int y = pty - psmax; y < pty + psmax; y++)
-		for (int x = ptx - psmax; x < ptx + psmax; x++)
-			if (mapData[y * mapWidth + x] != 0 && boundingBoxCollision(entbox, {x * tileSize, y * tileSize, tileSize, tileSize}))
-				return false;
+	for (int tileY = pty - psmax; tileY < pty + psmax; tileY++) {
+		for (int tileX = ptx - psmax; tileX < ptx + psmax; tileX++) {
+			if (mapData[tileY * mapWidth + tileX] != 0 && boundingBoxCollision(entbox, {tileX * tileSize, tileY * tileSize, tileSize, tileSize})) {
+				if ((x + y) > 1) {
+					return moveEntity(ent, x / 2.0, y / 2.0);
+				} else {
+					return checkEntityForLand(ent);
+				}
+			}
+		}
+	}
 
 	// if execution gets to here, there is no collision
 	ctrl->x += x;
@@ -107,7 +114,7 @@ bool Map::moveEntity (Entity* ent, double x, double y) {
 	return true;
 }
 
-void Map::checkEntityForFall (Entity* ent) {
+bool Map::checkEntityForFall (Entity* ent) {
     EntityController* ctrl = ent->control;
     int ptx = (ctrl->x + ctrl->w / 2) / tileSize, // x, y pos of the middle/lower tile the entity is located on
         pty = (ctrl->y + ctrl->h / 2) / tileSize;
@@ -125,8 +132,20 @@ void Map::checkEntityForFall (Entity* ent) {
     }
     if (falling) {
         ctrl->vy = 0;
+		// vx stays equal to running speed
         ctrl->state = ENTITY_FLYING;
     }
+	return falling;
+}
+
+bool Map::checkEntityForLand (Entity* ent) {
+	EntityController* ctrl = ent->control;
+	bool landed = ((int)round(ctrl->y) % tileSize) == 0 && !checkEntityForFall(ent);
+	if (landed) {
+		ctrl->state = ENTITY_IDLE;
+		ctrl->vy = 0;
+	}
+	return landed;
 }
 
 void Map::update (float delta) {

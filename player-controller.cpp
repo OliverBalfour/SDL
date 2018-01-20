@@ -9,14 +9,15 @@ PlayerController::PlayerController (std::vector<bool>* kys, Mouse* ms) {
 void PlayerController::stateIdle (float delta) {}
 void PlayerController::stateJumping (float delta) {}
 void PlayerController::stateRunning (float delta) {
+	vx = runningSpeed;
     if (direction)
-        dx = delta * 120;
+        dx = delta * vx;
     else
-        dx = delta * -120;
+        dx = delta * -vx;
 }
 void PlayerController::stateFlying (float delta) {
     vy += gravity * delta;
-    dx = delta * vx;
+    // dx = delta * vx;
     dy = delta * vy;
 }
 void PlayerController::stateFlyingUnconscious (float delta) {}

@@ -11,6 +11,7 @@ EntityController::EntityController () {
 	dy = 0;
     vx = 0;
     vy = 0;
+	runningSpeed = 120;
     gravity = 0;
     direction = true;
 }

@@ -25,7 +25,8 @@ class Map {
         bool loadFromFile (string name);
         void setPlayer (Entity* pl);
 		bool moveEntity (Entity* ent, double x, double y); // tries to move an entity, handling collisions
-        void checkEntityForFall (Entity* ent);
+        bool checkEntityForFall (Entity* ent);
+        bool checkEntityForLand (Entity* ent);
 		void update (float delta);
         void render (SDL_Window* window);
     private:
