@@ -37,7 +37,6 @@ PlayerController playerController(&keys, &mouse);
 Entity* player;
 Subject InputEventSubject;
 
-bool debug = true;
 // For FPS averaged over 10 frames
 const int frameTimesSize = 10;
 std::deque<unsigned int> frameTimes;
@@ -133,7 +132,7 @@ void loadResources () {
 	bgTexture.loadFromFile(renderer, "assets/background.png");
 	SDL_Color color = {0, 0, 0};
 	startText.loadFromText(renderer, font, &color, "Press Space to start");
-	player = new Entity(&playerController, renderer, "assets/sprite.png");
+	player = new Entity(&playerController, renderer, "assets/sprite.png", font, config.debug);
 	map = new Map(renderer);
 	map->loadFromFile("levels/test.map");
 	map->setPlayer(player);
@@ -148,13 +147,13 @@ void freeResources () {
 
 bool init () {
 	// Load config file
-	config = loadConfig("config.txt", debug);
+	config = loadConfig("config.txt", true);
 
 	// SDL init
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cerr << "SDL error: Could not initialse SDL: " << SDL_GetError() << std::endl;
 		return false;
-	} else if (debug) {
+	} else if (config.debug) {
 		std::cout << "Initialised SDL\n";
 	}
 
@@ -168,7 +167,7 @@ bool init () {
 	if (window == nullptr) {
 		std::cerr << "SDL error: Window could not be created: " << SDL_GetError() << "\n";
 		return false;
-	} else if (debug) {
+	} else if (config.debug) {
 		std::cout << "Created window\n";
 	}
 
@@ -178,7 +177,7 @@ bool init () {
 	if (renderer == nullptr) {
 		std::cerr << "SDL error: Renderer could not be created: " << SDL_GetError() << "\n";
 		return false;
-	} else if (debug) {
+	} else if (config.debug) {
 		std::cout << "Created renderer\n";
 	}
 
@@ -217,21 +216,21 @@ int main (int argc, char* argv[]) {
 	}
 
 	// Load resources
-	if (debug) std::cout << "Loading resources...\n";
+	if (config.debug) std::cout << "Loading resources...\n";
 	loadResources();
-	if (debug) std::cout << "Finished loading resources\n\n";
+	if (config.debug) std::cout << "Finished loading resources\n\n";
 
 	// Main loop
-	if (debug) std::cout << "Started loop\n";
+	if (config.debug) std::cout << "Started loop\n";
 	loop();
-	if (debug) std::cout << "Finished loop\n\n";
+	if (config.debug) std::cout << "Finished loop\n\n";
 
 	// Free resources (clear memory)
-	if (debug) std::cout << "Freeing resources... ";
+	if (config.debug) std::cout << "Freeing resources... ";
 	freeResources();
-	if (debug) std::cout << "done\n\n";
+	if (config.debug) std::cout << "done\n\n";
 
 	// It actually worked...
-	if (debug) std::cout << "Finished, exiting\n\n";
+	if (config.debug) std::cout << "Finished, exiting\n\n";
 	return 0;
 }

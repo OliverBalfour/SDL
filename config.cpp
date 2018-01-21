@@ -31,6 +31,9 @@ Config loadConfig (string filename, bool debug) {
 			} else if (token == "vsync") {
 				configFile >> config.vsync;
 				if (debug) std::cout << "  vsync: " << (config.vsync ? "on" : "off") << std::endl;
+			} else if (token == "debug") {
+				configFile >> config.debug;
+				if (debug) std::cout << "  debug: " << (config.debug ? "on" : "off") << std::endl;
 			} else if (token == "name") {
 				configFile >> config.name;
 				if (debug) std::cout << "  name: " << config.name << std::endl;

@@ -4,6 +4,8 @@
 
 #include <string>
 #include <iostream>
+#include <sstream>
+#include <cmath>
 
 // method of controlling an entity - can be a player, AI, or even networked player
 // all it is responsible for doing is changing state
@@ -30,6 +32,7 @@ class EntityController {
         EntityController ();
         virtual void update (float delta) = 0;
         void setGravity (float gravity);
+        std::string getDebugString ();
     protected:
         friend class Entity;
         friend class Map;

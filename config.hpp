@@ -10,6 +10,7 @@ struct Config {
 	bool fullscreen =	false;
 	bool fpscounter =	false;
 	bool vsync =		true;
+	bool debug =		false;
 	string name =		"SDL Game";
 };
 

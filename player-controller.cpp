@@ -27,12 +27,6 @@ void PlayerController::stateUnconscious (float delta) {}
 void PlayerController::stateDead (float delta) {}
 
 void PlayerController::update (float delta) {
-    const char* EntityStateStrings[] = {
-        "ENTITY_IDLE", "ENTITY_JUMPING", "ENTITY_RUNNING", "ENTITY_FLYING",
-        "ENTITY_FLYING_UNCONSCIOUS", "ENTITY_CLIMBING", "ENTITY_CLIMBING_IDLE",
-        "ENTITY_CLIMBING_JUMPING", "ENTITY_UNCONSCIOUS", "ENTITY_DEAD"
-    };
-    std::cout << EntityStateStrings[state] << ' ' << vy << '\n';
     switch (state) {
         case ENTITY_IDLE:
             stateIdle(delta); break;

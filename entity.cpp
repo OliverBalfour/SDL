@@ -1,10 +1,13 @@
 
 #include "entity.hpp"
 
-Entity::Entity (EntityController* ctrl, SDL_Renderer* renderer, std::string spritePath) {
-    if (!sprite.loadFromFile(renderer, spritePath))
-        std::cerr << "Entity error: Could not load sprite: '" << spritePath << "'\n";
+Entity::Entity (EntityController* ctrl, SDL_Renderer* renderer, std::string spritePath, TTF_Font* font, bool debug) {
+    rnd = renderer;
     control = ctrl;
+    this->font = font;
+    this->debug = debug;
+    if (!sprite.loadFromFile(rnd, spritePath))
+        std::cerr << "Entity error: Could not load sprite: '" << spritePath << "'\n";
 }
 
 void Entity::render (int ox, int oy) {
@@ -23,6 +26,15 @@ void Entity::render (int ox, int oy) {
     int rx = (int)round(control->x) + ox,
         ry = (int)round(control->y) + oy;
     sprite.render({16 * frameIndex, 0, control->w, control->h}, rx, ry, flip);
+
+    if (debug)
+        renderDebug(rx, ry);
+}
+
+void Entity::renderDebug (int rx, int ry) {
+    SDL_Color color = {255, 0, 0};
+    debugText.loadFromText(rnd, font, &color, control->getDebugString());
+    debugText.render(rx + control->w + 8, ry);
 }
 
 Box Entity::getBoundingBox () {

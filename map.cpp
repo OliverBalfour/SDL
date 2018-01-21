@@ -132,7 +132,8 @@ void Map::checkEntityForFall (Entity* ent) {
 void Map::update (float delta) {
 	for (int i = 0; i < entities.size(); i++) {
         entities[i]->update(delta);
-		moveEntity(entities[i], entities[i]->control->dx, entities[i]->control->dy);
+        if (entities[i]->control->dx != 0 || entities[i]->control->dy != 0)
+            moveEntity(entities[i], entities[i]->control->dx, entities[i]->control->dy);
 		entities[i]->control->dx = 0;
 		entities[i]->control->dy = 0;
     }

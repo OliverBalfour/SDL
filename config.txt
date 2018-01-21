@@ -3,3 +3,4 @@ windowHeight 480
 fullscreen 0
 fpscounter 1
 vsync 1
+debug 1
