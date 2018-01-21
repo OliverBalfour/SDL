@@ -17,7 +17,8 @@ void PlayerController::stateRunning (float delta) {
 }
 void PlayerController::stateFlying (float delta) {
     vy += gravity * delta;
-    // dx = delta * vx;
+    vx *= 1 - (0.1 * delta);
+    dx = delta * vx;
     dy = delta * vy;
 }
 void PlayerController::stateFlyingUnconscious (float delta) {}
@@ -76,6 +77,7 @@ void PlayerController::onNotify (const Input& input) {
     // press A/D to start climbing (as opposed to climbing_idle)
     else if (input.type == KEYUP_INPUT && (input.key.key == SDLK_a || input.key.key == SDLK_d) && !keys->at(SDLK_a) && !keys->at(SDLK_d) && state == ENTITY_CLIMBING)
         state = ENTITY_CLIMBING_IDLE;
+
     // left click to start jumping
     else if (input.type == MOUSEBUTTONDOWN_INPUT && input.button.button == SDL_BUTTON_LEFT && (state == ENTITY_IDLE || state == ENTITY_RUNNING))
         state = ENTITY_JUMPING;
@@ -88,4 +90,11 @@ void PlayerController::onNotify (const Input& input) {
     // release left click to stop climbing_jumping and idle
     else if (input.type == MOUSEBUTTONUP_INPUT && input.button.button == SDL_BUTTON_LEFT && state == ENTITY_CLIMBING_JUMPING)
         state = ENTITY_CLIMBING_IDLE;
+
+    // press key to start flying
+    else if (input.type == KEYDOWN_INPUT && input.key.key == SDLK_SPACE && (state == ENTITY_IDLE || state == ENTITY_RUNNING)) {
+        state = ENTITY_FLYING;
+        vy = -160;
+        vx = runningSpeed * (direction ? 1 : -1);
+    }
 }

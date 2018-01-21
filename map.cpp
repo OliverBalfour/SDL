@@ -66,7 +66,7 @@ bool Map::loadFromFile (string name) {
     // loop through entities and set their gravity
     for (int i = 0; i < entities.size(); i++) {
         std::cout << "hi";
-        entities[i]->control->setGravity(5.0 * tileSize);
+        entities[i]->control->setGravity(15.0 * tileSize);
     }
 
     return true;
@@ -75,7 +75,7 @@ bool Map::loadFromFile (string name) {
 void Map::setPlayer (Entity* pl) {
     player = pl;
     entities.push_back(pl);
-    pl->control->setGravity(5.0 * tileSize);
+    pl->control->setGravity(15.0 * tileSize);
 }
 
 bool Map::moveEntity (Entity* ent, double x, double y) {
@@ -132,7 +132,8 @@ bool Map::checkEntityForFall (Entity* ent) {
     }
     if (falling) {
         ctrl->vy = 0;
-		// vx stays equal to running speed
+        // vx stays equal to running speed
+        ctrl->vx = ctrl->runningSpeed * (ctrl->direction ? 1 : -1);
         ctrl->state = ENTITY_FLYING;
     }
 	return falling;
