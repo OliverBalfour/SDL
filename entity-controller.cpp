@@ -22,11 +22,11 @@ void EntityController::setGravity (float gravity) {
 
 std::string EntityController::getDebugString () {
     const char* EntityStateStrings[] = {
-        "ENTITY_IDLE", "ENTITY_JUMPING", "ENTITY_RUNNING", "ENTITY_FLYING",
-        "ENTITY_FLYING_UNCONSCIOUS", "ENTITY_CLIMBING", "ENTITY_CLIMBING_IDLE",
-        "ENTITY_CLIMBING_JUMPING", "ENTITY_UNCONSCIOUS", "ENTITY_DEAD"
+        "IDLE", "JUMPING", "RUNNING", "FLYING",
+        "FLYING_UNCONSCIOUS", "CLIMBING", "CLIMBING_IDLE",
+        "CLIMBING_JUMPING", "UNCONSCIOUS", "DEAD"
     };
     std::stringstream str;
-    str << EntityStateStrings[state] << ' ' << (int)round(vy);
+    str << EntityStateStrings[state] << " vy" << (int)round(vy) << " y" << (int)round(y);
     return str.str();
 }

@@ -139,11 +139,18 @@ bool Map::checkEntityForFall (Entity* ent) {
 }
 
 bool Map::checkEntityForLand (Entity* ent) {
+    std::cout << "check for land\n";
 	EntityController* ctrl = ent->control;
-	bool landed = ((int)round(ctrl->y) % tileSize) == 0 && !checkEntityForFall(ent);
+    int y = (int)round(ctrl->y),
+        ydiff = y % tileSize,
+        threshold = 4;
+	bool landed = (ydiff < threshold) && !checkEntityForFall(ent);
 	if (landed) {
 		ctrl->state = ENTITY_IDLE;
 		ctrl->vy = 0;
+        if (ydiff) {
+            ctrl->y -= ydiff;
+        }
 	}
 	return landed;
 }
