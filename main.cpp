@@ -159,7 +159,7 @@ bool init () {
 
 	// Create window
 	window = SDL_CreateWindow(
-		"Test Application",
+		"SDL Game",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		config.windowWidth, config.windowHeight,
 		SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN

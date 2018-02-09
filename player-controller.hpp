@@ -18,23 +18,23 @@ struct Mouse {
 };
 
 class PlayerController : public EntityController, public Observer {
-    public:
-        PlayerController (std::vector<bool>* kys, Mouse* ms);
-        void update (float delta);
+	public:
+		PlayerController (std::vector<bool>* kys, Mouse* ms);
+		void update (float delta);
 		void onNotify (const Input& input);
-    private:
-        std::vector<bool>* keys;
-        Mouse* mouse;
-        void stateIdle (float delta);
-        void stateJumping (float delta);
-        void stateRunning (float delta);
-        void stateFlying (float delta);
-        void stateFlyingUnconscious (float delta);
-        void stateClimbing (float delta);
-        void stateClimbingIdle (float delta);
-        void stateClimbingJumping (float delta);
-        void stateUnconscious (float delta);
-        void stateDead (float delta);
+	private:
+		std::vector<bool>* keys;
+		Mouse* mouse;
+		void stateIdle (float delta);
+		void stateJumping (float delta);
+		void stateRunning (float delta);
+		void stateFlying (float delta);
+		void stateFlyingUnconscious (float delta);
+		void stateClimbing (float delta);
+		void stateClimbingIdle (float delta);
+		void stateClimbingJumping (float delta);
+		void stateUnconscious (float delta);
+		void stateDead (float delta);
 };
 
 #endif

@@ -20,24 +20,24 @@
 using std::string;
 
 class Map {
-    public:
-        Map (SDL_Renderer* rnd);
-        bool loadFromFile (string name);
-        void setPlayer (Entity* pl);
+	public:
+		Map (SDL_Renderer* rnd);
+		bool loadFromFile (string name);
+		void setPlayer (Entity* pl);
 		bool moveEntity (Entity* ent, double x, double y); // tries to move an entity, handling collisions
-        bool checkEntityForFall (Entity* ent);
-        bool checkEntityForLand (Entity* ent);
+		bool checkEntityForFall (Entity* ent);
+		bool checkEntityForLand (Entity* ent);
 		void update (float delta);
-        void render (SDL_Window* window);
-    private:
-        SDL_Renderer* renderer;
-        Entity* player; // pointer to player, also in 'entities'
-        std::vector<Entity*> entities;
+		void render (SDL_Window* window);
+	private:
+		SDL_Renderer* renderer;
+		Entity* player; // pointer to player, also in 'entities'
+		std::vector<Entity*> entities;
 
-        unsigned short mapWidth, mapHeight, tileSize, tilesetColumns;
-        string tilesetFilename;
-        Texture tileset;
-        std::vector<uint_least32_t> mapData;
+		unsigned short mapWidth, mapHeight, tileSize, tilesetColumns;
+		string tilesetFilename;
+		Texture tileset;
+		std::vector<uint_least32_t> mapData;
 };
 
 #endif

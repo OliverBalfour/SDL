@@ -5,31 +5,31 @@
 #include <SDL.h>
 
 enum InputType {
-    KEYDOWN_INPUT,
-    KEYUP_INPUT,
-    MOUSEMOTION_INPUT,
-    MOUSEBUTTONDOWN_INPUT,
-    MOUSEBUTTONUP_INPUT
+	KEYDOWN_INPUT,
+	KEYUP_INPUT,
+	MOUSEMOTION_INPUT,
+	MOUSEBUTTONDOWN_INPUT,
+	MOUSEBUTTONUP_INPUT
 };
 
 struct KeyboardInput {
-    InputType type;
-    SDL_Keycode key;
+	InputType type;
+	SDL_Keycode key;
 };
 struct MouseMotionInput {
-    InputType type;
-    int x, y, xrel, yrel;
+	InputType type;
+	int x, y, xrel, yrel;
 };
 struct MouseClickInput {
-    InputType type;
-    unsigned short button;
+	InputType type;
+	unsigned short button;
 };
 
 union Input {
-    InputType type;
-    KeyboardInput key;
-    MouseMotionInput motion;
-    MouseClickInput button;
+	InputType type;
+	KeyboardInput key;
+	MouseMotionInput motion;
+	MouseClickInput button;
 };
 
 #endif
